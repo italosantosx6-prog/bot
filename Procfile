@@ -1,2 +1,1 @@
-web: python bot.py
-webhook: python webhooks.py
+web: python bot_client.py

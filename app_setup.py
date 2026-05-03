@@ -25,7 +25,7 @@ from handlers.perfil import perfil_callback
 from handlers.admin_painel import adm_command, adm_callback, adm_msg_handler
 from handlers.inline_search import inline_query_handler
 from handlers.gift import gift_handler
-from handlers.pix_handler import pix_check_callback, pix_handler, pix_menu_callback
+from handlers.pix_handler import pix_check_callback, pix_handler, pix_menu_callback, pix_amount_select_callback, handle_custom_amount_message
 from utils.telegram_errors import telegram_error_handler
 
 
@@ -73,6 +73,7 @@ def build_client_application() -> Application:
     app.add_handler(CallbackQueryHandler(ggs_callback, pattern=r"^ggs_"))
     app.add_handler(CallbackQueryHandler(ccs_callback, pattern=r"^cc_"))
     app.add_handler(CallbackQueryHandler(pix_menu_callback, pattern=r"^pix_menu$"))
+    app.add_handler(CallbackQueryHandler(pix_amount_select_callback, pattern=r"^pix_amount_"))
     app.add_handler(CallbackQueryHandler(pix_check_callback, pattern=r"^pix_check_"))
     app.add_handler(CallbackQueryHandler(perfil_callback, pattern=r"^perfil_"))
     app.add_handler(CallbackQueryHandler(start_handler, pattern=r"^menu_principal$"))
@@ -109,6 +110,10 @@ def build_admin_application() -> Application:
 
 async def _multiplex_client_text(update: Update, context: ContextTypes.DEFAULT_TYPE):
     texto = (update.message.text or "").strip().lower()
+
+    # PIX: aguardando valor digitado pelo usuário
+    if await handle_custom_amount_message(update, context):
+        return
 
     if texto.startswith(("buscar_banco ", "buscar_bin ", "buscar_bandeira ")):
         await ggs_busca_handler(update, context)
