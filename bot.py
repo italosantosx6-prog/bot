@@ -15,7 +15,7 @@ from handlers.pix_handler import pix_command, pix_menu_callback, pix_check_callb
 from handlers.perfil import perfil_handler, perfil_callback
 from handlers.gift import gift_handler
 from handlers.admin_painel import adm_command, adm_callback, adm_msg_handler
-from database.realtime import start_realtime_listener
+
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -38,7 +38,6 @@ logger = logging.getLogger(__name__)
 
 
 def main():
-    start_realtime_listener()
     asyncio.set_event_loop(asyncio.new_event_loop())
 
     app = Application.builder().token(BOT_TOKEN).build()
