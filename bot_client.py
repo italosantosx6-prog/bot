@@ -6,11 +6,13 @@ Rode: python bot_client.py
 
 Não registra painel /adm; dados vêm do mesmo Supabase que o bot de equipe.
 """
+import asyncio
 import logging
 
 from app_setup import build_client_application
 from config import BOT_TOKEN
 from utils.single_instance import acquire_process_lock
+from telegram import Bot
 
 logging.basicConfig(
     format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
@@ -30,9 +32,17 @@ def main():
         )
         return
 
+    # Remove qualquer webhook ativo antes de iniciar polling
+    async def _clear_webhook():
+        bot = Bot(BOT_TOKEN)
+        await bot.delete_webhook(drop_pending_updates=True)
+        await bot.close()
+
+    asyncio.run(_clear_webhook())
+
     app = build_client_application()
     logger.info("Infinity Store — bot CLIENTE (loja) iniciado.")
-    app.run_polling(drop_pending_updates=True)
+    app.run_polling(drop_pending_updates=True, allowed_updates=["message", "callback_query", "inline_query"])
 
 
 if __name__ == "__main__":
