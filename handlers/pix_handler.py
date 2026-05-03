@@ -721,7 +721,7 @@ pix_handler = CommandHandler("pix", pix_command)
 async def handle_custom_amount_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Captura mensagem de texto quando aguardamos um valor customizado."""
     if not context.user_data.get("awaiting_pix_amount"):
-        return False
+        return
 
     msg = update.effective_message
     if not msg or not msg.text:
