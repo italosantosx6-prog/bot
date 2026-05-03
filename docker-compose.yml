@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  bot:
+    build: .
+    container_name: morfel_bot
+    command: python bot.py
+    env_file: .env
+    restart: always
+  web:
+    build: .
+    container_name: morfel_webhooks
+    command: gunicorn --bind 0.0.0.0:8000 webhooks:app
+    env_file: .env
+    ports:
+      - "8000:8000"
+    restart: always
